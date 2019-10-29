@@ -1,4 +1,4 @@
-# FACER_Sauron
+# Sauron Cam
 Face recognition software
 
 Es necesario instalar los modulos de deteccion junto con los que agilizan el modelo.
