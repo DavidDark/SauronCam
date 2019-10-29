@@ -15,7 +15,8 @@ while(True):
 	if d == 2:
 		rec.Reconocer()
 		continue
+
 	else:
-		#Presiona cualquier otra wevada para salir.
+	#Presiona cualquier otra wevada para salir.
 		print("Saliendo...")
 		break

@@ -94,19 +94,19 @@ def Reconocer():
 				y = startY - 10 if startY - 10 > 10 else startY + 10
 				cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
 
-				# T es un valor asignado a un estandar de probabilidad para determinar si es conocido o no.
-				#T=0.60
+				#T es un valor asignado a un estandar de probabilidad para determinar si es conocido o no.
+				T=0.25
 
-				#if proba > T:
-				#cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
+				if proba > T:
+					cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
 					#Si la probabilidad es mayor al estandar, entonces se escribe el nombre y la probabilidad asignadas
 					#respecto al proceso de reconocimiento.
-				cv2.putText(frame, text, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+					cv2.putText(frame, text, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
 					
-				#else:
-				#	cv2.rectangle(frame, (startX, startY), (endX, endY),(255, 0, 0), 2)
+				else:
+					cv2.rectangle(frame, (startX, startY), (endX, endY),(255, 0, 0), 2)
 					#Si la probabilidad es menor al estandar asignado, se escribe el nombre de desconocido y su probabilidad.
-					#cv2.putText(frame,"Unknown: {:.2f}%".format(proba * 100),(startX, y),cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0,0,255),2)
+					cv2.putText(frame,"Persona: {:.2f}%".format(proba * 100),(startX, y),cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0,0,255),2)
 
 		# Actualiza el contador de los FPS
 		fps.update()

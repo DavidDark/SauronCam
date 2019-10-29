@@ -42,7 +42,7 @@ def Registrar():
 			shot = 0
 			print("[INFO] Tomando Fotografías...")
 			# Este For está programado para tomar nueve fotografías seguidas.
-			for shoot in range(0,9):
+			for shoot in range(0,2):
 				photo = 'dataset/{}/{}.jpg'.format(nombre,snap)
 				cv2.imwrite(photo,frame)
 				snap+=1
@@ -57,7 +57,7 @@ def Registrar():
 			break
 		#El loop tambien termina una vez que se han tomado 9 sesiones de 9 fotografías.
 		#Añadiendo un total de 81 fotografías al dataset del Miembro
-		if times == 9:
+		if times == 20:
 			cv2.destroyAllWindows()
 			vs.stop()
 			break
