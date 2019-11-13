@@ -40,6 +40,8 @@ def Reconocer():
 
 	print("[INFO] Presiona * para salir.")
 	# Se ejecuta un ciclo a través de los frames extraídos del stream
+	framming = 0
+
 	while True:
 		# Se obtiene un frame del stream
 		frame = vs.read()
@@ -95,7 +97,7 @@ def Reconocer():
 				cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
 
 				#T es un valor asignado a un estandar de probabilidad para determinar si es conocido o no.
-				T=0.25
+				T=0.90
 
 				if proba > T:
 					cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
@@ -104,9 +106,23 @@ def Reconocer():
 					cv2.putText(frame, text, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
 					
 				else:
-					cv2.rectangle(frame, (startX, startY), (endX, endY),(255, 0, 0), 2)
+					cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
 					#Si la probabilidad es menor al estandar asignado, se escribe el nombre de desconocido y su probabilidad.
-					cv2.putText(frame,"Persona: {:.2f}%".format(proba * 100),(startX, y),cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0,0,255),2)
+					cv2.putText(frame,"cliente: {:.2f}%".format(proba * 100),(startX, y),cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0,0,255),2)
+				
+				
+				if name == "Diego":
+					framming += 1
+					if framming > 10:
+						cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
+						print("Es Diego Flores, posible ladrón de sonrisas, favor de vigilar.")
+						framming = 0
+					else:
+						continue
+				else:
+					framming = 0
+					continue
+					
 
 		# Actualiza el contador de los FPS
 		fps.update()

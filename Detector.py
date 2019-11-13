@@ -60,7 +60,8 @@ def Detectar(vs, args, net):
 #Este fragmento de código sirve para correr esta clase de forma individual.
 if __name__ == "__main__":
     print("[INFO] Iniciando prueba del Detector, porfavor espere...")
-    vs = VideoStream(src=0).start()
+    #vs = VideoStream(src=0).start()
+    vs = VideoStream(src='rtsp://Cámara:admin@192.168.1.219').start()
     time.sleep(3)
 
     args,net = Arguments()
