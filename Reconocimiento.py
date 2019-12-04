@@ -10,8 +10,28 @@ import pickle
 import time
 import cv2
 import os
+#SQLITE
+#import sqlite3
+#from sqlite3 import Error
+#def connection(db_file):
+#	conn = None
+#	try:
+#		conn = sqlite3.connect(db_file)
+#	except Error as e:
+#		print(e)
+#	return conn
+
+#def select(conn):
+#	cur = conn.cursor()
+#	cur.execute("SELECT * FROM Registro")
+#	rows = cur.fetchall()
+#	for row in rows:
+#		print(row)
 
 def Reconocer():
+#	database = r"Miembros.db"
+#	conn = connection(database)
+
 	#Se manda a llamar el método con los argumentos por defecto para el reconocimiento de Video
 	args= Args_Recog.ArgsV()
 
@@ -113,9 +133,11 @@ def Reconocer():
 				
 				if name == "Diego":
 					framming += 1
-					if framming > 10:
+					if framming > 20:
 						cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
 						print("Es Diego Flores, posible ladrón de sonrisas, favor de vigilar.")
+						#select(conn)
+
 						framming = 0
 					else:
 						continue
