@@ -10,6 +10,26 @@ import pickle
 import time
 import cv2
 import os
+#Show interface part of a screenshot
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import os
+import tkinter as tk
+from tkinter import messagebox
+
+class GUI(tk.Frame):
+	def __init__(self, master = None):
+		super().__init__(master)
+		self.master = master
+		
+
+	def create_widgets(self):
+		#Registrar
+		pass
+	def alert(self, mes):
+		messagebox.showwarning(mes, "ALERTA")
+
+
 #SQLITE
 #import sqlite3
 #from sqlite3 import Error
@@ -29,11 +49,19 @@ import os
 #		print(row)
 
 def Reconocer():
+	#root = tk.Tk()
+	#app = GUI(master = root)
+	
 #	database = r"Miembros.db"
 #	conn = connection(database)
 
 	#Se manda a llamar el método con los argumentos por defecto para el reconocimiento de Video
 	args= Args_Recog.ArgsV()
+	exists = os.path.isfile('snap.jpg')
+	if exists:
+		os.remove("snap.jpg")
+	else:
+		pass
 
 	# Se asignan los modelos de detección con su respectiva dirección
 	print("[INFO] Cargando detector...")
@@ -131,11 +159,16 @@ def Reconocer():
 					cv2.putText(frame,"cliente: {:.2f}%".format(proba * 100),(startX, y),cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0,0,255),2)
 				
 				
-				if name == "Diego":
+				if name == "David":
 					framming += 1
 					if framming > 20:
 						cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
-						print("Es Diego Flores, posible ladrón de sonrisas, favor de vigilar.")
+						#app.alert("Es Diego Flores, posible ladrón de sonrisas, favor de vigilar.")
+						messagebox.showwarning("ALERTA", "Es David Pérez, posible ladrón de sonrisas, favor de vigilar.")
+
+						photo = 'snap.jpg'
+						cv2.imwrite(photo,frame)
+						break
 						#select(conn)
 
 						framming = 0
@@ -162,6 +195,18 @@ def Reconocer():
 	print("[INFO] Tiempo de ejecución: {:.2f}".format(fps.elapsed()))
 	print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 
-	# Cierra la ventana y los procesos.
-	cv2.destroyAllWindows()
-	vs.stop()
+	if exists:
+		img=mpimg.imread("snap.jpg")
+		imgplot = plt.imshow(img)
+		plt.show()
+		#img2 = mpimg.imread("dataset/Diego/VID-20191029-WA0003 048.jpg")
+		#imgplot = plt.imshow(img2)
+		#plt.show()
+		cv2.destroyAllWindows()
+		vs.stop()
+		Reconocer()
+	else:
+		# Cierra la ventana y los procesos.
+		cv2.destroyAllWindows()
+		vs.stop()
+		pass
