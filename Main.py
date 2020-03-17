@@ -3,7 +3,10 @@ import Registro as reg
 import Reconocimiento as rec
 import tkinter as tk
 
+#A user interface that manages the options of the program
 class GUI(tk.Frame):
+
+	#Creatung main window
 	def __init__(self, master = None):
 		super().__init__(master)
 		self.master = master
@@ -11,6 +14,7 @@ class GUI(tk.Frame):
 		self.master.geometry("250x130")
 		self.pack()
 		self.create_widgets()
+
 
 	def create_widgets(self):
 		#Registrar
@@ -31,6 +35,7 @@ class GUI(tk.Frame):
 
 
 def main():
+	#Calling the GUI
 	root = tk.Tk()
 	app = GUI(master = root)
 	app.mainloop()
@@ -39,7 +44,7 @@ if __name__ == '__main__':
 	main()
 
 #En un pequeño menù dentro de la consola se muestran las clases ligadas que se pueden ejecutar
-
+#Se remplazo por el GUI                       
 while(False):
 	print("¿Qué acción desea realizar?")
 	d= int(input("Registrar = 1. \nReconocimiento Facial = 2. \nSalir = Any. \n "))
