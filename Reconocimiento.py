@@ -17,6 +17,8 @@ import os
 import tkinter as tk
 from tkinter import messagebox
 
+#Para alertas
+#Futuro: Sacar como el proyecto de Scanner para que sea en doble plano y no interrumpa al detectar
 class GUI(tk.Frame):
 	def __init__(self, master = None):
 		super().__init__(master)
@@ -48,6 +50,22 @@ class GUI(tk.Frame):
 #	for row in rows:
 #		print(row)
 
+#Mock up method that returns the info of a given id
+def getInfo(id):
+	m = {"name": "Carlos", "lastname": "Trejo", "bday": "23/08/97", "supervisor": "Diego", "contact": "8449999999", "notes": "REVIEW REVIEW REVIEW REVIEW REVIEW REVIEW "}
+	return m
+
+#Mock up method that conects to the show details inrerface
+#This one writes a file with all the info, so the GUI can read on it
+def maptostring(maps):
+	return maps["name"] + "\n" + maps["lastname"] + "\n" + maps["bday"] + "\n" + maps["supervisor"] + "\n" + maps["contact"] + "\n" + maps["notes"]
+
+def conectToIf(maps):
+	file_object = open(r"logdetection/log.txt","w")
+	towrite = maptostring(maps)
+	file_object.write(towrite)
+	file_object.close()
+
 def Reconocer():
 	#root = tk.Tk()
 	#app = GUI(master = root)
@@ -56,7 +74,7 @@ def Reconocer():
 #	conn = connection(database)
 
 	#Se manda a llamar el método con los argumentos por defecto para el reconocimiento de Video
-	args= Args_Recog.ArgsV()
+	args = Args_Recog.ArgsV()
 	exists = os.path.isfile('snap.jpg')
 	if exists:
 		os.remove("snap.jpg")
@@ -90,6 +108,10 @@ def Reconocer():
 	# Se ejecuta un ciclo a través de los frames extraídos del stream
 	framming = 0
 
+	poinames = ["Carlos", "Diego"]
+	poi = 0
+	lpoi = 10
+
 	while True:
 		# Se obtiene un frame del stream
 		frame = vs.read()
@@ -107,6 +129,7 @@ def Reconocer():
 		detector.setInput(imageBlob)
 		detections = detector.forward()
 
+		poic = False
 		# Lleva a cabo un ciclo de acuerdo a las detecciones.
 		for i in range(0, detections.shape[2]):
 			# Extrae el nivel de confianza (probabilidad) de acuerdo a las predicciones
@@ -145,7 +168,7 @@ def Reconocer():
 				cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
 
 				#T es un valor asignado a un estandar de probabilidad para determinar si es conocido o no.
-				T=0.90
+				T=0.70
 
 				if proba > T:
 					cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
@@ -156,28 +179,38 @@ def Reconocer():
 				else:
 					cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
 					#Si la probabilidad es menor al estandar asignado, se escribe el nombre de desconocido y su probabilidad.
-					cv2.putText(frame,"cliente: {:.2f}%".format(proba * 100),(startX, y),cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0,0,255),2)
+					cv2.putText(frame,"cliente: {:.2f}%".format(100 - (proba * 100)),(startX, y),cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0,0,255),2)
 				
-				
-				if name == "David":
-					framming += 1
-					if framming > 20:
-						cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
-						#app.alert("Es Diego Flores, posible ladrón de sonrisas, favor de vigilar.")
-						messagebox.showwarning("ALERTA", "Es David Pérez, posible ladrón de sonrisas, favor de vigilar.")
+				#Mover afuera del for, se reinicia con multiples caras
+				if name in  poinames:
+					poic = True
+					cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
+					photo = 'logdetection/lastsnap.jpg'
+					cv2.imwrite(photo,frame)
 
-						photo = 'snap.jpg'
-						cv2.imwrite(photo,frame)
-						break
+				if name == "nonenone":
+					poic = True
+					#framming += 1
+					cv2.rectangle(frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
+						#app.alert("Es Diego Flores, posible ladrón de sonrisas, favor de vigilar.")
+						#messagebox.showwarning("ALERTA", "Es Carlos, posible ladrón de sonrisas, favor de vigilar.")
+
+					photo = 'logdetection/lastsnap.jpg'
+					cv2.imwrite(photo,frame)
+					break
 						#select(conn)
 
-						framming = 0
-					else:
-						continue
-				else:
-					framming = 0
-					continue
-					
+						#framming = 0
+		if poic:
+			poi += 1
+		else:
+			poi = 0
+
+		if poi == lpoi:
+			print("SE DETECTO A POI")
+			ginfo = getInfo("Carlos")
+			conectToIf(ginfo)
+
 
 		# Actualiza el contador de los FPS
 		fps.update()
@@ -196,15 +229,21 @@ def Reconocer():
 	print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 
 	if exists:
-		img=mpimg.imread("snap.jpg")
-		imgplot = plt.imshow(img)
-		plt.show()
-		#img2 = mpimg.imread("dataset/Diego/VID-20191029-WA0003 048.jpg")
-		#imgplot = plt.imshow(img2)
-		#plt.show()
-		cv2.destroyAllWindows()
-		vs.stop()
-		Reconocer()
+		try:
+			img=mpimg.imread("snap.jpg")
+			imgplot = plt.imshow(img)
+			plt.show()
+			#img2 = mpimg.imread("dataset/Diego/VID-20191029-WA0003 048.jpg")
+			#imgplot = plt.imshow(img2)
+			#plt.show()
+			cv2.destroyAllWindows()
+			vs.stop()
+			Reconocer()
+		except:
+			# Cierra la ventana y los procesos.
+			cv2.destroyAllWindows()
+			vs.stop()
+
 	else:
 		# Cierra la ventana y los procesos.
 		cv2.destroyAllWindows()
